@@ -8,6 +8,7 @@ import Spinner from './Spinner'
 import { AuthRoute } from './AuthRoute'
 
 import axios from 'axios'
+import axiosWithAuth from '../axios/index'
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
@@ -22,8 +23,10 @@ export default function App() {
 
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
-  const redirectToLogin = () => { /* ✨ implement */ }
-  const redirectToArticles = () => { /* ✨ implement */ }
+  const redirectToLogin = () => { 
+    navigate('/'); /* ✨ implement */ }
+  const redirectToArticles = () => {
+    navigate('/articles') /* ✨ implement */ }
 
   const logout = () => {
     // ✨ implement
@@ -31,23 +34,34 @@ export default function App() {
     // and a message saying "Goodbye!" should be set in its proper state.
     // In any case, we should redirect the browser back to the login screen,
     // using the helper above.
+    console.log(localStorage)
+    
+    const token = localStorage.getItem('token')
+    if (token !== null) {
+      return localStorage.removeItem("token"), setMessage("Goodbye!") 
+    }
+    redirectToLogin()
+    console.log(localStorage)
   }
 
   const login = ({ username, password }) => {
     // ✨ implement
     setMessage("")
     setSpinnerOn(true);
+    console.log(spinnerOn)
     axios.post(loginUrl, {username: username, password: password})
       .then(res => {
         console.log(res, "App.js login log")
         localStorage.setItem("token", res.data.token)
         setMessage(res.data.message)
-        setSpinnerOn(false)
         navigate('/articles')
+        
       })
       .catch(err => {
         console.log(err)
       })
+      setSpinnerOn(false)
+      console.log(spinnerOn)
     // We should flush the message state, turn on the spinner
     // and launch a request to the proper endpoint.
     // On success, we should set the token to local storage in a 'token' key,
@@ -65,6 +79,18 @@ export default function App() {
     // If something goes wrong, check the status of the response:
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     // Don't forget to turn off the spinner!
+    setMessage("")
+    setSpinnerOn(true)
+    axiosWithAuth().get('/articles')
+      .then(res => {
+        console.log(res, "getArticles log")
+        setArticles(res.data.articles)
+        setMessage(res.data.message)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      setSpinnerOn(false)
   }
 
   const postArticle = article => {
@@ -86,7 +112,7 @@ export default function App() {
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <>
-      <Spinner />
+      <Spinner spinnerOn={spinnerOn}/>
       <Message message={message}/>
       <button id="logout" onClick={logout}>Logout from app</button>
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- do not change this line */}
@@ -100,7 +126,7 @@ export default function App() {
           <Route path="articles" element={
             <AuthRoute>
               <ArticleForm />
-              <Articles />
+              <Articles getArticles={getArticles} articles={articles}/>
             </AuthRoute>
           } />
         </Routes>

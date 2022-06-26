@@ -21,7 +21,7 @@ export default function LoginForm(props) {
   const onSubmit = evt => {
     evt.preventDefault()
     // ✨ implement
-    console.log(login(values))
+    login(values)
   }
 
   const isDisabled = () => {
@@ -32,8 +32,8 @@ export default function LoginForm(props) {
     }
     
   }
-  console.log(isDisabled())
-  console.log(values, "values log")
+  // console.log(isDisabled())
+  // console.log(values, "values log")
     // ✨ implement
     // Trimmed username must be >= 3, and
     // trimmed password must be >= 8 for
