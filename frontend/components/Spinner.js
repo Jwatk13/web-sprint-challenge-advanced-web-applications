@@ -20,7 +20,7 @@ const StyledSpinner = styled.div`
     animation: ${rotation} 1s infinite linear;
   }
 `
-
+//WHY DOES SPINNER NOT WORK?????
 export default function Spinner({ on }) {
   if (!on) return null
   return (
