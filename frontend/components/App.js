@@ -99,16 +99,16 @@ export default function App() {
     axiosWithAuth().post('/articles', article)
       .then(res => {
         console.log(res, "postArticle log")
-        setArticles(res.data.article)
+        setArticles([...articles, res.data.article])
         setCurrentArticleId(res.data.article.article_id)
         setMessage(res.data.message)
       })
       .catch(err => {
         console.log(err)
+        setMessage(err.response.data.message)
       })
   }
 
-  //WHY DOES UPDATE ARTICLE TAKE TWO ARGUMENTS, AND WHAT IS ARTICLE???????
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
@@ -133,6 +133,8 @@ export default function App() {
         console.log(err)
       })
   }
+
+  console.log(spinnerOn)
 
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
