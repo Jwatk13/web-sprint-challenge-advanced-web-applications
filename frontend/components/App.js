@@ -46,7 +46,7 @@ export default function App() {
     // ✨ implement
     setMessage("")
     setSpinnerOn(true)
-    axios.post(loginUrl, {username: username, password: password})
+    axios.post(loginUrl, {username, password})
       .then(res => {
         // console.log(res, "App.js login log")
         localStorage.setItem("token", res.data.token)
@@ -54,11 +54,12 @@ export default function App() {
         navigate('/articles')
         // console.log(spinnerOn)
         // debugger
+        setSpinnerOn(false)
       })
       .catch(err => {
         console.log(err)
       })
-      setSpinnerOn(false)
+      
     // We should flush the message state, turn on the spinner
     // and launch a request to the proper endpoint.
     // On success, we should set the token to local storage in a 'token' key,
@@ -83,11 +84,12 @@ export default function App() {
         // console.log(res, "getArticles log")
         res.status === 401 ? navigate('/') : setArticles(res.data.articles)
         setMessage(res.data.message)
+        setSpinnerOn(false)
       })
       .catch(err => {
         console.log(err)
       })
-      setSpinnerOn(false)
+      
   }
 
   //what is article supposed to be?????
@@ -124,22 +126,21 @@ export default function App() {
   const deleteArticle = (article_id) => {
     // ✨ implement
     //WHY DOES ARTICLE_iD STAY UNDEFINED?????
-    axiosWithAuth().delete(`/articles/${articles.article_id}`)
+    axiosWithAuth().delete(`/articles/${article_id}`)
       .then(res => {
         console.log(res, 'App.js, deleteArticle log')
         setArticles(articles.filter(article => article.article_id !== article_id));
+        setMessage(res.data.message)
       })
       .catch(err => {
         console.log(err)
       })
   }
 
-  console.log(spinnerOn)
-
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <>
-      <Spinner spinnerOn={spinnerOn}/>
+      <Spinner on={spinnerOn}/>
       <Message message={message}/>
       <button id="logout" onClick={logout}>Logout from app</button>
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- do not change this line */}
@@ -154,18 +155,19 @@ export default function App() {
             <AuthRoute>
               <ArticleForm 
                 postArticle={postArticle} 
-                currentArticleId={currentArticleId} 
-                setCurrentArticleId={setCurrentArticleId} 
-                articles={articles} 
+                setCurrentArticleId={setCurrentArticleId}  
                 redirectToArticles={redirectToArticles}
                 updateArticle={updateArticle}
+                currentArticle={articles.find(x => x.article_id === currentArticleId)}
+                currentArticleId={currentArticleId}
               />
               <Articles 
                 getArticles={getArticles} 
                 articles={articles} 
                 deleteArticle={deleteArticle} 
-                updateArticle={updateArticle}
+                currentArticleId={currentArticleId}
                 setCurrentArticleId={setCurrentArticleId}
+                updateArticle={updateArticle}
               />
             </AuthRoute>
           } />
