@@ -4,6 +4,10 @@ import React from 'react'
 import Spinner from '../components/Spinner';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
+const spinnerTest = {
+  spinnerOn: false
+}
+
 test('sanity', () => {
   expect(true).toBe(true)
 })
@@ -11,3 +15,11 @@ test('sanity', () => {
 test('renders without errors with no props', async () => {
   render(<Spinner />)
 });
+
+test('spinner not running', () => {
+  render(<Spinner spinnerOn={spinnerTest}/>)
+
+  const spinner = screen.queryByText(/please wait.../i);
+
+  expect(spinner).not.toBeTruthy();
+})
