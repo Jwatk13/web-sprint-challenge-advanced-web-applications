@@ -102,7 +102,6 @@ export default function App() {
       .then(res => {
         console.log(res, "postArticle log")
         setArticles([...articles, res.data.article])
-        setCurrentArticleId(res.data.article.article_id)
         setMessage(res.data.message)
       })
       .catch(err => {
@@ -114,6 +113,7 @@ export default function App() {
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
+    setCurrentArticleId(null)
     axiosWithAuth().put(`/articles/${article_id}`, article)
       .then(res => {
         console.log(res, "updateArticle log")
@@ -125,6 +125,7 @@ export default function App() {
           }
         }))
         setMessage(res.data.message)
+        
       })
       .catch(err => {
         console.log(err)

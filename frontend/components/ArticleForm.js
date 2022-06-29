@@ -6,7 +6,7 @@ const initialFormValues = { title: '', text: '', topic: '' }
 export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ where are my props? Destructure them here
-  const { postArticle, redirectToArticles, currentArticle, currentArticleId, updateArticle } = props
+  const { postArticle, redirectToArticles, currentArticle, currentArticleId, updateArticle, setCurrentArticleId } = props
 
   // console.log(currentArticle)
   // console.log(currentArticleId)
@@ -15,6 +15,7 @@ export default function ArticleForm(props) {
     // Every time the `currentArticle` prop changes, we should check it for truthiness:
     // if it's truthy, we should set its title, text and topic into the corresponding
     // values of the form. If it's not, we should reset the form back to initial values.
+    console.log(currentArticle)
     if(currentArticle !== undefined) {
       setValues({...values, title: currentArticle.title, text: currentArticle.text, topic: currentArticle.topic})
     } else {
@@ -38,8 +39,16 @@ export default function ArticleForm(props) {
       updateArticle({article_id: currentArticleId, article: values})
     } else {
       postArticle(values)
-    }
-    setValues(initialFormValues)
+      setValues(initialFormValues)
+    } 
+    
+
+   
+  }
+
+  const cancelEdit = (evt) => {
+    evt.preventDefault()
+    setCurrentArticleId(null)
   }
 
   const isDisabled = () => {
@@ -51,7 +60,7 @@ export default function ArticleForm(props) {
   return (
     // ✨ fix the JSX: make the heading display either "Edit" or "Create"
     // and replace Function.prototype with the correct function
-    <form id="form" onSubmit={onSubmit}>
+    <form id="form" >
       <h2>Create Article / Edit Article</h2>
       <input
         maxLength={50}
@@ -74,8 +83,8 @@ export default function ArticleForm(props) {
         <option value="Node">Node</option>
       </select>
       <div className="button-group">
-        <button disabled={values === initialFormValues ? true : false} id="submitArticle">Submit</button>
-        <button onClick={redirectToArticles}>Cancel edit</button>
+        <button disabled={values === initialFormValues ? true : false} onClick={onSubmit} type="submit" id="submitArticle">Submit</button>
+        <button onClick={cancelEdit}>Cancel edit</button>
       </div>
     </form>
   )
