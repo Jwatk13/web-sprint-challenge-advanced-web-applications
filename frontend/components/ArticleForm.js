@@ -6,7 +6,7 @@ const initialFormValues = { title: '', text: '', topic: '' }
 export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ where are my props? Destructure them here
-  const { postArticle, redirectToArticles, currentArticle, currentArticleId, setCurrentArticleId, updateArticle } = props
+  const { postArticle, redirectToArticles, currentArticle, currentArticleId, updateArticle } = props
 
   // console.log(currentArticle)
   // console.log(currentArticleId)
@@ -34,24 +34,25 @@ export default function ArticleForm(props) {
     // ✨ implement
     // We must submit a new post or update an existing one,
     // depending on the truthyness of the `currentArticle` prop.
-    console.log(currentArticleId)
-    console.log(values)
-    updateArticle(currentArticleId, values)
-    // postArticle(values)
+    if (currentArticle !== undefined) {
+      updateArticle({article_id: currentArticleId, article: values})
+    } else {
+      postArticle(values)
+    }
     setValues(initialFormValues)
   }
 
   const isDisabled = () => {
     // ✨ implement
     // Make sure the inputs have some values
-    values === initialFormValues ? true : false
+    // values === initialFormValues ? true : false
   }
 
   return (
     // ✨ fix the JSX: make the heading display either "Edit" or "Create"
     // and replace Function.prototype with the correct function
     <form id="form" onSubmit={onSubmit}>
-      <h2>Create Article</h2>
+      <h2>Create Article / Edit Article</h2>
       <input
         maxLength={50}
         onChange={onChange}

@@ -117,6 +117,14 @@ export default function App() {
     axiosWithAuth().put(`/articles/${article_id}`, article)
       .then(res => {
         console.log(res, "updateArticle log")
+        setArticles(articles.map(art => {
+          if (art.article_id === res.data.article.article_id) {
+            return res.data.article
+          } else {
+            return art
+          }
+        }))
+        setMessage(res.data.message)
       })
       .catch(err => {
         console.log(err)
@@ -125,10 +133,9 @@ export default function App() {
 
   const deleteArticle = (article_id) => {
     // ✨ implement
-    //WHY DOES ARTICLE_iD STAY UNDEFINED?????
     axiosWithAuth().delete(`/articles/${article_id}`)
       .then(res => {
-        console.log(res, 'App.js, deleteArticle log')
+        // console.log(res, 'App.js, deleteArticle log')
         setArticles(articles.filter(article => article.article_id !== article_id));
         setMessage(res.data.message)
       })
